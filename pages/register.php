@@ -4,6 +4,7 @@ session_start();
 
 require_once "../includes/database.php";
 require_once "../includes/auth.php";
+require_once "../app/Repositories/UserRepository.php";
 
 if (isLoggedIn()) {
     header("Location: ../index.php");
@@ -17,7 +18,6 @@ $email = "";
 $phone = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
     $name = trim($_POST["name"]);
     $email = trim($_POST["email"]);
     $phone = trim($_POST["phone"]);
@@ -30,18 +30,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($email)) {
         $errors[] = "El email es obligatorio";
     }
-   if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors[] = "El email no tiene un formato válido";
 
-   }
+    if (!empty($email) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "El email no tiene un formato válido";
+    }
 
-    if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)){
-        $sql = "SELECT id FROM users WHERE email = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s",$email);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if($result->num_rows > 0){
+    if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $existingUser = findUserByEmail($conn, $email);
+
+        if ($existingUser !== null) {
             $errors[] = "Este email ya está registrado";
         }
     }
@@ -49,22 +46,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($password)) {
         $errors[] = "La contraseña es obligatoria";
     }
-    if (!empty($password) && strlen($password) < 8){
+
+    if (!empty($password) && strlen($password) < 8) {
         $errors[] = "La contraseña debe tener al menos 8 caracteres";
     }
 
-    if (count($errors) > 0) {
-
-    } else {
+    if (count($errors) === 0) {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        //@debug
-        //echo $passwordHash;
 
-        $sql = "INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ssss", $name, $email, $phone, $passwordHash);
-
-        if ($stmt->execute()){
+        if(createUser($conn, $name, $email, $phone, $passwordHash)){
             $success = "Usuario creado correctamente";
         }else {
             $errors[] = "Error al crear el usuario";

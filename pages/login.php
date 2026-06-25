@@ -2,6 +2,8 @@
 
 session_start();
 
+require_once "../app/Repositories/UserRepository.php";
+
 require_once "../includes/database.php";
 
 require_once "../includes/auth.php";
@@ -29,18 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if (count($errors) === 0) {
-        $sql = "SELECT id, name, email, password, role FROM users WHERE email = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
+        $user = findUserByEmail($conn, $email);
 
-        $result = $stmt->get_result();
-
-        if ($result->num_rows === 0) {
+        if ($user === null) {
             $errors[] = "Email o contraseña incorrectos";
         } else {
-            $user = $result->fetch_assoc();
-
             if (password_verify($password, $user["password"])) {
                 $_SESSION["user_id"] = $user["id"];
                 $_SESSION["user_name"] = $user["name"];
