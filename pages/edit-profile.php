@@ -2,6 +2,7 @@
 
 session_start();
 
+require_once "../app/Repositories/UserRepository.php";
 require_once "../includes/database.php";
 require_once "../includes/auth.php";
 
@@ -11,15 +12,15 @@ $errors = [];
 $success = "";
 
 $userId = $_SESSION["user_id"];
-$sql = "SELECT name, phone, street, street_number, postal_code, floor, door, city, province FROM users WHERE id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userId);
-$stmt->execute();
 
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
+$user = findUserById($conn, $userId);
 
-if ($_SERVER["REQUEST_METHOD"] === "POST"){
+if ($user === null) {
+    header("Location: profile.php");
+    exit;
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $name = trim($_POST["name"]);
     $phone = trim($_POST["phone"]);
     $street = trim($_POST["street"]);
@@ -29,16 +30,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
     $door = trim($_POST["door"]);
     $city = trim($_POST["city"]);
     $province = trim($_POST["province"]);
-    if(empty($name)){
+
+    if (empty($name)) {
         $errors[] = "El nombre es obligatorio";
     }
+
     if (count($errors) === 0) {
-    $sql = "UPDATE users SET name = ?, phone = ?, street = ?, street_number = ?, postal_code = ?, floor = ?, door = ?, city = ?, province = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssssssi", $name, $phone, $street, $street_number, $postal_code, $floor, $door, $city, $province, $userId);
-}
-    if($stmt->execute()){
-        
+        if (updateUserProfile($conn, $userId, $name, $phone, $street, $street_number, $postal_code, $floor, $door, $city, $province)) {
+            $success = "Perfil actualizado correctamente";
+            $_SESSION["user_name"] = $name;
+
+            $user["name"] = $name;
+            $user["phone"] = $phone;
+            $user["street"] = $street;
+            $user["street_number"] = $street_number;
+            $user["postal_code"] = $postal_code;
+            $user["floor"] = $floor;
+            $user["door"] = $door;
+            $user["city"] = $city;
+            $user["province"] = $province;
+        } else {
+            $errors[] = "No se pudo actualizar el perfil";
+        }
     }
 }
 ?>
@@ -55,6 +68,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST"){
         <h1>Editar perfil</h1>
 
         <a href="profile.php">Volver a mi cuenta</a>
+        <?php if(!empty($success)): ?>
+            <p><?php echo $success; ?></p>
+        <?php endif; ?>
+        
+        <?php if (count($errors) > 0): ?>
+               <ul>
+                    <?php foreach ($errors as $error): ?>
+                        <li><?php echo $error; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+        <?php endif; ?>
 
         <form method="POST" action="">
             <label for="name">Nombre</label>
