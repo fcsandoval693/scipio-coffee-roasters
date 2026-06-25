@@ -3,6 +3,7 @@ session_start();
 
 require_once "includes/database.php";
 require_once "includes/auth.php";
+require_once "includes/cart.php";
 $sql = "SELECT * FROM products WHERE active = 1 AND featured = 1";
 $result = $conn->query($sql);
 ?>
@@ -23,6 +24,7 @@ $result = $conn->query($sql);
         <li><a href="#products">Productos</a></li>
         <li><a href="#about">Nosotros</a></li>
         <li><a href="#contact">Contacto</a></li>
+        <li><a href="pages/cart.php">Carrito (<?php echo cartCount(); ?>)</a></li>
 
         <?php if (isLoggedIn()): ?>
           <li>Hola, <?php echo currentUserName(); ?></li>
@@ -64,6 +66,11 @@ $result = $conn->query($sql);
           <p><?php echo $product["description"]; ?></p>
           <p><?php echo $product["tasting_notes"]; ?></p>
           <span><?php echo $product["price"]; ?>€</span>
+          <?php if ($product["stock"] > 0): ?>
+                 <a href="pages/add-to-cart.php?id=<?php echo $product["id"]; ?>">Añadir al carrito</a>
+          <?php else: ?>
+            <span>Sin stock</span>
+          <?php endif; ?>         
         </article>
       <?php endwhile; ?>
     </section>
