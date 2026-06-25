@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 
 require_once "includes/database.php";
@@ -12,11 +12,11 @@ $result = $conn->query($sql);
 <head>
   <meta charset="UTF-8">
   <title>Scipio Coffee Roasters</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="public/css/styles.css">
 </head>
 <body>
   <header>
-    <!-- <img src="img/logo_scipio_roasters_horizontal.png" alt="Logo Scipio Coffee Roasters"> -->
+    <!-- <img src="public/img/logo_scipio_roasters_horizontal.png" alt="Logo Scipio Coffee Roasters"> -->
     <nav>
       <ul>
         <li><a href="#hero">Inicio</a></li>
@@ -25,18 +25,18 @@ $result = $conn->query($sql);
         <li><a href="#contact">Contacto</a></li>
 
         <?php if (isLoggedIn()): ?>
-            <li>Hola, <?php echo currentUserName(); ?></li>
-            
-            <?php if (isAdmin()): ?>
-                 <li><a href="admin/index.php">Admin</a></li> 
-             <?php endif; ?>
-            
-            <li><a href="pages/profile.php">Mi cuenta</a></li>
-            <li><a href="pages/logout.php">Cerrar sesión</a></li>
+          <li>Hola, <?php echo currentUserName(); ?></li>
+
+          <?php if (isAdmin()): ?>
+            <li><a href="admin/index.php">Admin</a></li>
+          <?php endif; ?>
+
+          <li><a href="pages/profile.php">Mi cuenta</a></li>
+          <li><a href="pages/logout.php">Cerrar sesión</a></li>
         <?php else: ?>
-            <li><a href="pages/register.php">Registro</a></li>
-            <li><a href="pages/login.php">Iniciar sesión</a></li>
-        <?php endif; ?> 
+          <li><a href="pages/register.php">Registro</a></li>
+          <li><a href="pages/login.php">Iniciar sesión</a></li>
+        <?php endif; ?>
       </ul>
     </nav>
   </header>
@@ -75,14 +75,14 @@ $result = $conn->query($sql);
 
     <section id="contact">
       <h2>Contacto</h2>
-      <p>📞 +34 666 202 146</p>
-      <p>📍 Avinguda Roma, 12, Barcelona, Catalunya</p>
-      <p>🕐 Lunes a Viernes: 8:00 - 20:00 | Sábado: 9:00 - 14:00</p>
+      <p>Tel: +34 666 202 146</p>
+      <p>Dirección: Avinguda Roma, 12, Barcelona, Catalunya</p>
+      <p>Horario: Lunes a Viernes: 8:00 - 20:00 | Sábado: 9:00 - 14:00</p>
       <p>Si deseas ponerte en contacto con nosotros, envíanos un correo electrónico a</p>
       <a href="mailto:info@scipiocoffeeroasters.com">info@scipiocoffeeroasters.com</a>
 
       <div class="redes-sociales">
-        <a href="https://instagram.com/ScipioCoffe">📸 Instagram — @ScipioCoffe</a>
+        <a href="https://instagram.com/ScipioCoffe">Instagram - @ScipioCoffe</a>
       </div>
     </section>
   </main>
