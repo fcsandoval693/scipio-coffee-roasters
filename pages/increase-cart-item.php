@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 session_start();
 
@@ -19,5 +19,5 @@ if ($productId > 0) {
     }
 }
 
-header("Location: ../index.php");
+header("Location: cart.php");
 exit;

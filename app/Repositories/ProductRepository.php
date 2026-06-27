@@ -16,3 +16,19 @@ function findProductsByIds($conn, $ids)
 
     return $result->fetch_all(MYSQLI_ASSOC);
 }
+
+function findProductById($conn, $productId)
+{
+    $sql = "SELECT id, name, price, stock FROM products WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $productId);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+
+    if($result->nom_rows === 0){
+        return null;
+    }
+
+    return $result->fetch_assoc();
+}

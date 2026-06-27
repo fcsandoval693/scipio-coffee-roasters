@@ -19,9 +19,10 @@ requireLogin("login.php");
         <p>Nombre: <?php echo currentUserName(); ?></p>
         <p>Email: <?php echo currentUserEmail(); ?></p>
         <p>Rol: <?php echo currentUserRole(); ?></p>
-
+        <a href="edit-profile.php">Editar perfil</a>
         <a href="../index.php">Volver al inicio</a>
         <a href="logout.php">Cerrar sesión</a>
+        
     </main>
 </header>
 </body>

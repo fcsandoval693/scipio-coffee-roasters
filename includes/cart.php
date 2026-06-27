@@ -21,4 +21,29 @@ function cartCount()
 
     return array_sum($_SESSION["cart"]);
 }
+function clearCart()
+{
+    ensureCart();
+    $_SESSION["cart"] = [];
+}
+function removeFromCart($productId)
+{
+    ensureCart();
+    if(isset($_SESSION["cart"][$productId])){
+        unset($_SESSION["cart"][$productId]);
+    }
+}
+function decreaseCartItem($productId)
+{
+    ensureCart();
+    if(!isset($_SESSION["cart"][$productId])){
+        return;
+    }
+
+    if ($_SESSION["cart"][$productId] > 1){
+        $_SESSION["cart"][$productId]--;
+    } else {
+        removeFromCart($productId);
+    }
+}
 ?>

@@ -28,13 +28,22 @@ $products = findProductsByIds($conn, $productIds);
         <?php if (empty($_SESSION["cart"])): ?>
             <p>Tu carrito está vacío</p>
         <?php else: ?>
-            <p>Hay <?php echo cartCount(); ?> productos en tu carrito</p>
+            <p>
+                Hay <?php echo cartCount(); ?>
+                <?php echo cartCount() === 1 ? "producto" : "productos"; ?>
+                en tu carrito
+            </p>
+
+            <?php $total = 0; ?>
+            
 
             <ul>
+
                 <?php foreach ($products as $product): ?>
                     <?php
                         $quantity = $_SESSION["cart"][$product["id"]];
                         $subtotal = $quantity * $product["price"];
+                        $total += $subtotal;
                     ?>
                     <li>
                         <strong><?php echo $product["name"]; ?></strong>
@@ -44,10 +53,25 @@ $products = findProductsByIds($conn, $productIds);
                         Precio: <?php echo $product["price"]; ?>€
                         <br>
                         Subtotal: <?php echo number_format($subtotal, 2); ?>€
+                        <br>
+                        <br>
+                        <?php if($quantity < $product["stock"]): ?>
+                            <a href="increase-cart-item.php?id=<?php echo $product["id"]; ?>">Añadir una unidad</a>
+                        <?php else: ?>
+                            <span>No hay stock suficiente</span>
+                            <?php endif; ?>
+                        <br>
+                        <a href="decrease-cart-item.php?id=<?php echo $product["id"]; ?>">Quitar una unidad</a>
                     </li>
                 <?php endforeach; ?>
             </ul>
+
+        <p>Total: <?php echo number_format($total, 2); ?>€</p>
+
+        <a href="clear-cart.php">Vaciar carrito</a>
         <?php endif; ?>
     </main>
 </body>
 </html>
+
+
