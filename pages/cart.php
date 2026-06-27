@@ -54,7 +54,6 @@ $products = findProductsByIds($conn, $productIds);
                         <br>
                         Subtotal: <?php echo number_format($subtotal, 2); ?>€
                         <br>
-                        <br>
                         <?php if($quantity < $product["stock"]): ?>
                             <a href="increase-cart-item.php?id=<?php echo $product["id"]; ?>">Añadir una unidad</a>
                         <?php else: ?>
@@ -62,6 +61,8 @@ $products = findProductsByIds($conn, $productIds);
                             <?php endif; ?>
                         <br>
                         <a href="decrease-cart-item.php?id=<?php echo $product["id"]; ?>">Quitar una unidad</a>
+                        <br>
+                        <a href="remove-from-cart.php?id=<?php echo $product["id"]; ?>">Quitar producto</a>
                     </li>
                 <?php endforeach; ?>
             </ul>
