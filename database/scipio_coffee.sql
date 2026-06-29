@@ -20,6 +20,45 @@ CREATE TABLE products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE users(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL, 
+    email VARCHAR(150) NOT NULL UNIQUE,
+    phone VARCHAR(30) UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('client', 'admin') NOT NULL DEFAULT 'client',
+    street VARCHAR(150),
+    street_number VARCHAR(20),
+    postal_code VARCHAR(20),
+    floor VARCHAR(20),
+    door VARCHAR(20),
+    city VARCHAR(100),
+    province VARCHAR(100),
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL, 
+    status ENUM('pending', 'paid', 'preparing', 'shipped', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
+    total DECIMAL(8,2) NOT NULL DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    unit_price DECIMAL(8,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
 INSERT INTO products (
 name,
 description,
@@ -93,41 +132,3 @@ VALUES
 ('Triumphus Reserve','Edición especial de celebración.','Frutas tropicales, miel',18.95,7,'Panama','Boquete','Light','Lavado','V60, Chemex',1,'1700-2200m','Geisha',250,'triumphus.jpg',1,1);
 
 
-CREATE TABLE users(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL, 
-    email VARCHAR(150) NOT NULL UNIQUE,
-    phone VARCHAR(30) UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('client', 'admin') NOT NULL DEFAULT 'client',
-    street VARCHAR(150),
-    street_number VARCHAR(20),
-    postal_code VARCHAR(20),
-    floor VARCHAR(20),
-    door VARCHAR(20),
-    city VARCHAR(100),
-    province VARCHAR(100),
-    active BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-CREATE TABLE orders (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL, 
-    status ENUM('pending', 'paid', 'preparing', 'shipped', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
-    total DECIMAL(8,2) NOT NULL DEFAULT 0.00,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-CREATE TABLE order_items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT NOT NULL DEFAULT 1,
-    unit_price DECIMAL(8,2) NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES orders(id),
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);

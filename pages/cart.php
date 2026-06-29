@@ -69,7 +69,9 @@ $products = findProductsByIds($conn, $productIds);
 
         <p>Total: <?php echo number_format($total, 2); ?>€</p>
 
+        <a href="checkout.php">Finalizar pedido</a>
         <a href="clear-cart.php">Vaciar carrito</a>
+        
         <?php endif; ?>
     </main>
 </body>

@@ -1,0 +1,277 @@
+﻿{
+  "database": "scipio_coffee",
+  "description": "Estructura de base de datos para la tienda Scipio Coffee Roasters.",
+  "tables": {
+    "products": {
+      "description": "Productos de cafe disponibles en la tienda.",
+      "columns": {
+        "id": {
+          "type": "INT",
+          "auto_increment": true,
+          "primary_key": true,
+          "nullable": false
+        },
+        "name": {
+          "type": "VARCHAR(100)",
+          "nullable": false
+        },
+        "description": {
+          "type": "TEXT",
+          "nullable": false
+        },
+        "tasting_notes": {
+          "type": "TEXT",
+          "nullable": true
+        },
+        "price": {
+          "type": "DECIMAL(6,2)",
+          "nullable": false
+        },
+        "stock": {
+          "type": "INT",
+          "nullable": false,
+          "default": 0
+        },
+        "origin_country": {
+          "type": "VARCHAR(100)",
+          "nullable": false
+        },
+        "origin_region": {
+          "type": "VARCHAR(100)",
+          "nullable": true
+        },
+        "roast_type": {
+          "type": "VARCHAR(30)",
+          "nullable": false
+        },
+        "process_method": {
+          "type": "VARCHAR(50)",
+          "nullable": true
+        },
+        "recommended_brewing_methods": {
+          "type": "TEXT",
+          "nullable": true
+        },
+        "intensity": {
+          "type": "TINYINT",
+          "nullable": true
+        },
+        "altitude": {
+          "type": "VARCHAR(50)",
+          "nullable": true
+        },
+        "variety": {
+          "type": "VARCHAR(100)",
+          "nullable": true
+        },
+        "weight": {
+          "type": "INT",
+          "nullable": false
+        },
+        "image": {
+          "type": "VARCHAR(255)",
+          "nullable": true
+        },
+        "active": {
+          "type": "BOOLEAN",
+          "nullable": true,
+          "default": true
+        },
+        "featured": {
+          "type": "BOOLEAN",
+          "nullable": true,
+          "default": false
+        },
+        "created_at": {
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      }
+    },
+    "users": {
+      "description": "Usuarios registrados en la aplicacion.",
+      "columns": {
+        "id": {
+          "type": "INT",
+          "auto_increment": true,
+          "primary_key": true,
+          "nullable": false
+        },
+        "name": {
+          "type": "VARCHAR(100)",
+          "nullable": false
+        },
+        "email": {
+          "type": "VARCHAR(150)",
+          "nullable": false,
+          "unique": true
+        },
+        "phone": {
+          "type": "VARCHAR(30)",
+          "nullable": true,
+          "unique": true
+        },
+        "password": {
+          "type": "VARCHAR(255)",
+          "nullable": false,
+          "description": "Password guardado como hash, no como texto plano."
+        },
+        "role": {
+          "type": "ENUM",
+          "values": ["client", "admin"],
+          "nullable": false,
+          "default": "client"
+        },
+        "street": {
+          "type": "VARCHAR(150)",
+          "nullable": true
+        },
+        "street_number": {
+          "type": "VARCHAR(20)",
+          "nullable": true
+        },
+        "postal_code": {
+          "type": "VARCHAR(20)",
+          "nullable": true
+        },
+        "floor": {
+          "type": "VARCHAR(20)",
+          "nullable": true
+        },
+        "door": {
+          "type": "VARCHAR(20)",
+          "nullable": true
+        },
+        "city": {
+          "type": "VARCHAR(100)",
+          "nullable": true
+        },
+        "province": {
+          "type": "VARCHAR(100)",
+          "nullable": true
+        },
+        "active": {
+          "type": "BOOLEAN",
+          "nullable": false,
+          "default": true
+        },
+        "created_at": {
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "on_update": "CURRENT_TIMESTAMP"
+        }
+      }
+    },
+    "orders": {
+      "description": "Pedidos creados por usuarios registrados.",
+      "columns": {
+        "id": {
+          "type": "INT",
+          "auto_increment": true,
+          "primary_key": true,
+          "nullable": false
+        },
+        "user_id": {
+          "type": "INT",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "users",
+            "references_column": "id"
+          }
+        },
+        "status": {
+          "type": "ENUM",
+          "values": ["pending", "paid", "preparing", "shipped", "completed", "cancelled"],
+          "nullable": false,
+          "default": "pending"
+        },
+        "total": {
+          "type": "DECIMAL(8,2)",
+          "nullable": false,
+          "default": 0.0
+        },
+        "created_at": {
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updated_at": {
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "default": "CURRENT_TIMESTAMP",
+          "on_update": "CURRENT_TIMESTAMP"
+        }
+      }
+    },
+    "order_items": {
+      "description": "Lineas de producto dentro de cada pedido.",
+      "columns": {
+        "id": {
+          "type": "INT",
+          "auto_increment": true,
+          "primary_key": true,
+          "nullable": false
+        },
+        "order_id": {
+          "type": "INT",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "orders",
+            "references_column": "id"
+          }
+        },
+        "product_id": {
+          "type": "INT",
+          "nullable": false,
+          "foreign_key": {
+            "references_table": "products",
+            "references_column": "id"
+          }
+        },
+        "quantity": {
+          "type": "INT",
+          "nullable": false,
+          "default": 1
+        },
+        "unit_price": {
+          "type": "DECIMAL(8,2)",
+          "nullable": false,
+          "description": "Precio unitario del producto en el momento de hacer el pedido."
+        }
+      }
+    }
+  },
+  "relationships": [
+    {
+      "from_table": "orders",
+      "from_column": "user_id",
+      "to_table": "users",
+      "to_column": "id",
+      "type": "many_to_one",
+      "description": "Un usuario puede tener muchos pedidos. Cada pedido pertenece a un usuario."
+    },
+    {
+      "from_table": "order_items",
+      "from_column": "order_id",
+      "to_table": "orders",
+      "to_column": "id",
+      "type": "many_to_one",
+      "description": "Un pedido puede tener muchas lineas de pedido. Cada linea pertenece a un pedido."
+    },
+    {
+      "from_table": "order_items",
+      "from_column": "product_id",
+      "to_table": "products",
+      "to_column": "id",
+      "type": "many_to_one",
+      "description": "Un producto puede aparecer en muchas lineas de pedido. Cada linea apunta a un producto."
+    }
+  ]
+}

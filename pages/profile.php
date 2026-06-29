@@ -16,12 +16,16 @@ requireLogin("login.php");
   <header>
     <h1>Mi cuenta</h1>
     <main>
+
         <p>Nombre: <?php echo currentUserName(); ?></p>
         <p>Email: <?php echo currentUserEmail(); ?></p>
         <p>Rol: <?php echo currentUserRole(); ?></p>
         <a href="edit-profile.php">Editar perfil</a>
         <a href="../index.php">Volver al inicio</a>
         <a href="logout.php">Cerrar sesión</a>
+        <?php if (isset($_GET["order"]) && $_GET["order"] === "success"): ?>
+          <p>Pedido creado correctamente</p>
+        <?php endif; ?>
         
     </main>
 </header>
