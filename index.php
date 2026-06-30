@@ -19,6 +19,7 @@ $result = $conn->query($sql);
   <header>
     <!-- <img src="public/img/logo_scipio_roasters_horizontal.png" alt="Logo Scipio Coffee Roasters"> -->
     <nav>
+      <a class="brand" href="index.php">Scipio</a>
       <ul>
         <li><a href="#hero">Inicio</a></li>
         <li><a href="#products">Productos</a></li>
@@ -54,25 +55,43 @@ $result = $conn->query($sql);
 
       <p>Origen único. Tueste artesanal.</p>
 
-      <a href="#products">Ver productos</a>
+      <a class="btn btn-primary" href="#products">Ver productos</a>
     </section>
 
     <section id="products">
       <h2>Productos destacados</h2>
 
+    <div class="products-grid">
       <?php while ($product = $result->fetch_assoc()): ?>
         <article class="product-card">
           <h3><?php echo $product["name"]; ?></h3>
+
+           <p class="product-meta">
+            <?php echo $product["origin_country"]; ?> ·
+            <?php echo $product["roast_type"]; ?> ·
+            <?php echo $product["weight"]; ?>g
+          </p>
+
+          <span class="product-methods">
+            <?php echo $product["recommended_brewing_methods"]; ?>
+          </span>
+
           <p><?php echo $product["description"]; ?></p>
-          <p><?php echo $product["tasting_notes"]; ?></p>
-          <span><?php echo $product["price"]; ?>€</span>
-          <?php if ($product["stock"] > 0): ?>
-                 <a href="pages/add-to-cart.php?id=<?php echo $product["id"]; ?>">Añadir al carrito</a>
-          <?php else: ?>
-            <span>Sin stock</span>
-          <?php endif; ?>         
+
+          <p class="product-notes"><?php echo $product["tasting_notes"]; ?></p>
+
+          <div class="product-card-footer">
+            <span class="product-price"><?php echo $product["price"]; ?>€</span>
+
+            <?php if ($product["stock"] > 0): ?>
+              <a class="btn btn-primary" href="pages/add-to-cart.php?id=<?php echo $product["id"]; ?>">Añadir al carrito</a>
+            <?php else: ?>
+              <span class="product-status">Sin stock</span>
+            <?php endif; ?>
+          </div>
         </article>
       <?php endwhile; ?>
+    </div>
     </section>
 
     <section id="about">
@@ -95,3 +114,4 @@ $result = $conn->query($sql);
   </main>
 </body>
 </html>
+
